@@ -2,54 +2,59 @@
 // launch with npx ts-node src/scripts/11.CallInvokeContract.ts
 // Coded with Starknet.js v5.4.2
 
-import { CallData, constants, Provider, Contract, Account, json, ec } from "starknet";
+import { CallData, constants, Provider, Contract, Account, json, ec, } from "starknet";
+
 import fs from "fs";
-import { privateKey1 } from "../../A1priv/A1priv";
 import * as dotenv from "dotenv";
 dotenv.config();
 
 async function main() {
     //initialize Provider 
     const provider = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } });
+    const privateKey1 = "0x02f38fb567d5d50d375d6ec3c7f12b22c5eb436a3d16ddfde17eeef8e26eb93b"
 
     // initialize existing Argent X account
-    const account0Address: string = "0x00f92678a891046ae0789b9eb8dafde2669a6eb1bca493fb7d9b2bdd54171c18";
+    const account0Address: string = "0x03038ae29ffd0258880b34b9ffdd37a02bd1b7a7e15ff183c69a0a1c18d30998";
     console.log('Braavos1_ACCOUNT_ADDRESS=', account0Address);
     const account0 = new Account(provider, account0Address, privateKey1);
     console.log('existing Braavos1 connected.\n');
 
 
     // Connect the deployed Test instance in devnet
-    const testAddress = "0x697d3bc2e38d57752c28be0432771f4312d070174ae54eef67dd29e4afb174"; // modify in accordance with result of script 4
-    const compiledTest = json.parse(fs.readFileSync("./compiledContracts/test_type1.sierra").toString("ascii"));
+    const testAddress = "0x06fc32e57d69c45eb6fc6d5bca1b8a0498c701bf8ff7a1a7a05c0c79888f551e"; // modify in accordance with result of script 4
+    const compiledTest = json.parse(fs.readFileSync("./compiledContracts/con.sierra").toString("ascii"));
     const myTestContract = new Contract(compiledTest.abi, testAddress, provider);
     console.log('Test Contract connected at =', myTestContract.address);
 
     // Interactions with the contract with call & invoke
     myTestContract.connect(account0);
     const par1 = CallData.compile({
-        balance: 100,
+        _address: "0x00b7dc10a2c5dc61ac1067aec097754d5a3c9732fad3bda9226c53e7cc9fb821",
     })
-    const res1 = await myTestContract.test1(par1, { parseRequest: false, parseResponse: false, });
-    const res2 = await myTestContract.test2(par1, { parseRequest: false, parseResponse: false, });
-    const res3 = await myTestContract.test3({ parseRequest: false, parseResponse: false, });
-    const tx = await myTestContract.increase_balance(
-        CallData.compile({
-            amount: 100,
-        })
-    );
+    const res1 = await myTestContract.getName(par1, { parseRequest: false, parseResponse: false, });
+ 
+
+
+    // const res2 = await myTestContract.test2(par1, { parseRequest: false, parseResponse: false, });
+    // const res3 = await myTestContract.test3({ parseRequest: false, parseResponse: false, });
+    // const tx = await myTestContract.storeName(
+    //     CallData.compile({
+    //         _name : "AkashTesting",
+    //     })
+    // );
     // 🚨 do not work in V5.1.0
     //const bal1b = await myTestContract.call("get_balance");
+    // console.log("res1 =", uint256.res1);
     console.log("res1 =", res1);
-    console.log("res2 =", res2);
-    console.log("res3 =", res3);
-    await provider.waitForTransaction(tx.transaction_hash);
 
-    const balance = await myTestContract.get_balance({
-        parseRequest: false,
-        parseResponse: false,
-    });
-    console.log("res4 =", balance);
+    // console.log("res3 =", res3);
+    // await provider.waitForTransaction(tx.transaction_hash);
+
+    // const balance = await myTestContract.get_balance({
+    //     parseRequest: false,
+    //     parseResponse: false,
+    // });
+    // console.log("res4 =", balance);
     // console.log("Initial balance =", bal1b.res.toString());
     // estimate fee
     // const { suggestedMaxFee: estimatedFee1 } = await account0.estimateInvokeFee({ contractAddress: testAddress, entrypoint: "increase_balance", calldata: ["10", "30"] });

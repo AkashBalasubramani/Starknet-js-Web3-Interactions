@@ -3,7 +3,7 @@
 // launch with npx ts-node src/scripts/cairo11-devnet/4b.declareDeployHello.ts
 
 import { Provider, Account, Contract,  json,constants} from "starknet";
-import { accountTestnet2ArgentX1Address,accountTestnet2ArgentX1privateKey } from "../../A2priv/A2priv";
+// import { accountTestnet2ArgentX1Address,accountTestnet2ArgentX1privateKey } from "../../A2priv/A2priv";
 
 import fs from "fs";
 import * as dotenv from "dotenv";
@@ -16,8 +16,8 @@ async function main() {
      console.log('✅ Connected to testnet2.');
  
      // initialize existing predeployed account 0 of Devnet
-     const accountAddress: string = accountTestnet2ArgentX1Address;
-     const privateKey=accountTestnet2ArgentX1privateKey;
+     const accountAddress: string = "0x03038ae29ffd0258880b34b9ffdd37a02bd1b7a7e15ff183c69a0a1c18d30998";
+     const privateKey="0x02f38fb567d5d50d375d6ec3c7f12b22c5eb436a3d16ddfde17eeef8e26eb93b";
       const account0 = new Account(provider, accountAddress, privateKey);
      console.log('✅ Deployed account 1 of testnet2 =', account0.address);
      console.log('ACCOUNT_PRIVATE_KEY=', privateKey);
